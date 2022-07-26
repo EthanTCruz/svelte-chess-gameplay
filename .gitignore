@@ -1,0 +1,5 @@
+/node_modules/
+/public/build/
+/git-steals/
+/svelte-chess/
+.DS_Store
