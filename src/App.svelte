@@ -15,13 +15,90 @@
 		console.log(team)
 		console.log(piece)
 		if (piece == 'P'){
+			//add check en passant
 			return checkPawn(piece,team)
 		} else if (piece == 'N'){
 			return checkKnight(piece,team)
 		} else if (piece == 'R') {
 			return checkLaterally(team)
+		} else if (piece == 'B'){
+			return checkDiagonally(team)
+		} else if (piece == 'Q'){
+			return checkDiagonally(team) || checkLaterally(team)
+		} else if (piece == 'K'){
+			//add check castle
+			return checkKing(team)
 		}
 		return true
+	}
+
+	function checkKing(team){
+		let x = move_from[0] - move_to[0]
+		let y = move_from[1] - move_to[1]
+		x = x*x
+		y=y*y
+		let opponent
+
+		if ((x == 0 || x == 1)&&(y == 0||y == 1)&&(board[move_to[1]].positions[move_to[0]].charAt(1) != team)){
+			return true
+		}
+		return false
+	}
+
+	function checkDiagonally(team){
+		let x = move_from[0] - move_to[0]
+		let y = move_from[1] - move_to[1]
+		let direction = [1,1]
+		console.log(`x: ${x}`)
+		console.log(`y: ${y}`)
+		if (x > 0){
+			direction[0] = -1
+		}
+		if (y > 0){
+			direction[1] = -1
+		} 
+		return checkDiagonal(team,direction,move_from)	
+	}
+
+	function checkDiagonal(team,direction,location){
+		let opponent
+		console.log(team,direction,location)
+		if (team == 'W') {
+			opponent = 'B'
+		} else {
+			opponent = 'W'
+		}
+
+
+		console.log(`locations: ${location}`)
+		console.log(`direction: ${direction}`)
+
+		let next = [0,0]
+		next[0] = location[0]
+		next[1] = location[1]
+		next[0] = next[0] + direction[0]
+		next[1] = next[1] + direction[1]
+		if (next[0] == 8 || next[0] == -1 || next[1] == 8 || next[1] == -1)
+		return false
+		console.log(`next: ${next}`)
+		
+		
+		let next_space_team = board[next[1]].positions[next[0]].charAt(1)
+		if (next_space_team == opponent){
+			if (next[0] == move_to[0] && next[1] == move_to[1]){
+				return true
+			}
+			return false
+		} else if (next_space_team == ' '){
+			if (next[0] == move_to[0] && next[1] == move_to[1]){
+				return true
+			}
+			return checkDiagonal(team=team,direction=direction,next=next)
+		} else { 
+			return false
+		}
+
+
 	}
 
 	function checkLaterally(team){
@@ -38,17 +115,17 @@
 		} else {
 			return false
 		}
-		return checkDirection(team,direction,0,move_from)	
+		return checkDirection(team,direction,1,move_from)	
 		} else 	if (y == 0){		
 		if (x < 0){
-			direction = -1
-		} else if (x > 0){
 			direction = 1
+		} else if (x > 0){
+			direction = -1
 		} else {
 			return false
 		}
 
-			return checkDirection(team,direction,1,move_from)	
+			return checkDirection(team,direction,0,move_from)	
 		} else {
 			return false
 		}
@@ -62,8 +139,6 @@
 		} else {
 			opponent = 'W'
 		}
-
-
 		console.log(`locations: ${location}`)
 		console.log(`direction: ${direction}`)
 		console.log(`axis: ${axis}`)
@@ -71,6 +146,8 @@
 		next[0] = location[0]
 		next[1] = location[1]
 		next[axis] = next[axis] + direction
+		if (next[axis] == -1 || next[axis] == 8)
+		return false
 		console.log(`next: ${next}`)
 		
 		
@@ -79,16 +156,14 @@
 			if (next[0] == move_to[0] && next[1] == move_to[1]){
 				return true
 			}
-			console.log(1)
 			return false
 		} else if (next_space_team == ' '){
 			if (next[0] == move_to[0] && next[1] == move_to[1]){
 				return true
 			}
-			console.log(2)
-			return checkDirection(team,direction,axis,next)
+			return checkDirection(team=team,direction=direction,axis=axis,next=next)
 		} else { 
-			return true
+			return false
 		}
 
 	}
@@ -109,7 +184,7 @@
 		let l1_check = move_from[0] >= 1 && move_from[0] <= 7;
 		let d1_check = move_from[1] >= 1 && move_from[1] <= 7;
 		let u1_check = move_from[1] >= 0 && move_from[1] <= 6;
-		console.log(`r1: ${r1_check}`)
+
 		
 		let condition;
 
@@ -174,9 +249,9 @@
 			} 
 			if (r1_check) {
 				condition =  u_condition && move_from[1] + 2 == move_to[1]
-				console.log(condition)
+
 				condition =  u_condition && move_from[0] + 1  == move_to[0]
-				console.log(condition)
+
 				condition = condition && board[move_to[1]].positions[move_to[0]].charAt(1) != team
 				if(condition){
 					return true
@@ -197,9 +272,7 @@
 			} 
 			 if (r1_check) {
 				condition =  d_condition && move_from[1] - 2 == move_to[1]
-				console.log(condition)
 				condition =  d_condition && move_from[0] + 1  == move_to[0]
-				console.log(condition)
 				condition = condition && board[move_to[1]].positions[move_to[0]].charAt(1) != team
 				if(condition){
 					return true
