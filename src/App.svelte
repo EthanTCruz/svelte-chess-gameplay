@@ -27,21 +27,19 @@
 	function checkLaterally(team){
 		let x = move_from[0] - move_to[0]
 		let y = move_from[1] - move_to[1]
-		if (x == 0){
-
 		let direction
+		console.log(`x: ${x}`)
+		console.log(`y: ${y}`)
+		if (x == 0){
 		if (y < 0){
-			direction = -1
-		} else if (y > 0){
 			direction = 1
+		} else if (y > 0){
+			direction = -1
 		} else {
 			return false
 		}
-
-			return checkDirection(team,direction,1,move_from)	
-		} else 	if (y == 0){
-
-		let direction
+		return checkDirection(team,direction,0,move_from)	
+		} else 	if (y == 0){		
 		if (x < 0){
 			direction = -1
 		} else if (x > 0){
@@ -50,7 +48,7 @@
 			return false
 		}
 
-			return checkDirection(team,direction,0,move_from)	
+			return checkDirection(team,direction,1,move_from)	
 		} else {
 			return false
 		}
@@ -65,20 +63,15 @@
 			opponent = 'W'
 		}
 
-		if (direction == 1){
-			if (!(location[axis] <= 6)){
-				console.log(5)
-				return false
-			}
-		} else 	if (direction == -1){
-			if (!(location[axis] >= 1)){
-				console.log(6)
-				return false
-			}
-		}
-		console.log(0)
-		let next = location[axis] + direction
 
+		console.log(`locations: ${location}`)
+		console.log(`direction: ${direction}`)
+		console.log(`axis: ${axis}`)
+		let next = [0,0]
+		next[0] = location[0]
+		next[1] = location[1]
+		next[axis] = next[axis] + direction
+		console.log(`next: ${next}`)
 		
 		
 		let next_space_team = board[next[1]].positions[next[0]].charAt(1)
@@ -299,6 +292,7 @@
 		
 			positions_selected++;
 			move_from = [row-1,column-1];
+
 			return false
 		}
 	}
