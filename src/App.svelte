@@ -2,15 +2,19 @@
 
 	import { board } from './store.js'	
 
-	let turn = true;
+	let turn = 'W';
 	let move_no;
 	let positions_selected = 0;
 	let move_from;
 	let move_to;
+
 	function checkMove(){
 		let piece = board[move_from[1]].positions[move_from[0]]
 		
 		let team = piece.charAt(piece.length - 1);
+		if (team != turn){
+			return false
+		}
 		piece = piece.charAt(0);
 		console.log(team)
 		console.log(piece)
@@ -131,6 +135,29 @@
 		}
 			
 	}
+
+	function in_check(team){
+		let from_holder = [0,0]
+		let to_holder = [0,0]
+		from_holder[0] = move_from[0]
+		from_holder[1] = move_from[1]
+		to_holder[0] = move_to[0]
+		to_holder[1] = move_to[1]
+		let found_king=false
+		
+		for(let i = 0;!found_king;i++){
+			for (let j = 1; j <8; j++){
+				let king = board[j].positions[i]
+				if (king.charAt(0) == 'K'&&king.charAt(1)==team){
+					found_king = true
+					move_from[0] = i
+					move_from[1] = j
+				}
+			}
+		}
+		//return all check functions here
+	}
+
 	function checkDirection(team,direction,axis,location){
 		let opponent
 		console.log(team,direction,axis,location)
@@ -351,7 +378,11 @@
 			board = board
 			board[move_from[1]].positions[move_from[0]] = "  ";
 			board = board
-			turn = !turn
+			if (turn == 'W'){
+				turn = 'B'
+			} else {
+				turn = 'W'
+			}
 			
 			if (turn == false){
 				move_no++
