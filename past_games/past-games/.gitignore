@@ -1,0 +1,11 @@
+/node_modules/
+/public/build/
+
+.DS_Store
+
+node_modules
+/build
+/.svelte-kit
+/package
+/sql_api/env
+/__pycache__
